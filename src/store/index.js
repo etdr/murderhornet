@@ -6,14 +6,14 @@ const store = createStore({
     return {
       secondArity: 6,
       letters: {
-        primary: 'e',
-        secondaries: ['c', 'n', 'u', 'x', 'a', 't']
+        primary: '',
+        secondaries: []
       },
       worddict: {},
-      wordlist: ['neat', 'tent', 'executant'],
+      wordlist: [],
       guessed: {
-        true: ['neat', 'tent'],
-        false: ['cunt']
+        true: new Set(),
+        false: new Set()
       },
       options: {
         pangram: true,
@@ -30,13 +30,26 @@ const store = createStore({
 
       state.wordlist = getAllWordsForLetters({ primary, secondaries })
 
-      state.guessed.true = []
-      state.guessed.false = []
+      state.guessed.true = new Set()
+      state.guessed.false = new Set()
     },
 
     guess (state, word) {
-      if (state.wordlist.includes(word)) state.guessed.true = [...state.guessed.true, word]
-      else state.guessed.false.push(word)
+      if (state.wordlist.includes(word)) {
+        if (state.guessed.true.has(word)) console.log('you already got this')
+        state.guessed.true.add(word)
+      } else {
+        if (!word.split('').every(l => [...state.letters.secondaries, state.letters.primary].includes(l)))
+          console.log('bad letters')
+        
+        else if (state.guessed.false.has(word)) console.log('you already tried that one')
+
+        else if (!word.includes(state.letters.primary)) console.log('missing center letter')
+
+        else console.log('not a word')
+        
+        state.guessed.false.add(word)
+      }
     }
   }
 })
