@@ -8,6 +8,7 @@
 import EntryLetter from './EntryLetter.vue'
 
 export default {
+  props: ['submitWord', 'shuffleLetters'],
   components: {
     EntryLetter
   },
@@ -22,9 +23,12 @@ export default {
         this.letters.push(e.key.toLowerCase())
       } else if (e.keyCode === 8) {
         this.letters = this.letters.slice(0, -1)
+      } else if (e.keyCode === 32) {
+        this.shuffleLetters()
       } else if (e.keyCode === 13) {
         this.$store.commit('guess', this.letters.join(''))
         this.letters = []
+        this.submitWord()
       }
     }
   }

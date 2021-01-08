@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { generateLetters, getAllWordsForLetters } from '../logic/generation'
+import { generateLetters, getAllWordsForLetters, computePoints } from '../logic/generation'
 
 const store = createStore({
   state () {
@@ -18,7 +18,9 @@ const store = createStore({
       options: {
         pangram: true,
         disallowed: []
-      }
+      },
+      mbm: 'bad letters',
+      points: 0
     }
   },
   mutations: {
@@ -36,22 +38,33 @@ const store = createStore({
 
     guess (state, word) {
       if (state.wordlist.includes(word)) {
-        if (state.guessed.true.has(word)) console.log('you already got this')
+        
+
+        if (state.guessed.true.has(word)) state.mbm = 'you already got that one'
+        else if ([...state.letters.secondaries, state.letters.primary].every(l => word.split('').includes(l))) state.mbm = 'pangram!'
+        else state.mbm = ['good one', 'nice', 'ok', 'that\'s a word', 'yup', 'yes', 'all righty'][Math.floor(Math.random()*7)]
         state.guessed.true.add(word)
       } else {
-        if (!word.split('').every(l => [...state.letters.secondaries, state.letters.primary].includes(l)))
-          console.log('bad letters')
+        if (word.split('').some(l => ![...state.letters.secondaries, state.letters.primary].includes(l)))
+          state.mbm = 'bad letters'
         
-        else if (state.guessed.false.has(word)) console.log('you already tried that one')
+        
+        else if (state.guessed.false.has(word)) state.mbm = 'you already tried that one'
 
-        else if (!word.includes(state.letters.primary)) console.log('missing center letter')
+        else if (!word.includes(state.letters.primary)) state.mbm = 'missing center letter'
 
-        else console.log('not a word')
+        else if (word.length < 4) state.mbm = 'too short'
+
+        else state.mbm = 'not a word'
         
         state.guessed.false.add(word)
       }
+
+      state.points = computePoints(state.guessed)
+      console.log(state.points)
     }
-  }
+  },
+  
 })
 
 export default store

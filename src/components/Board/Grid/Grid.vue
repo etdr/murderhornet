@@ -1,7 +1,8 @@
 <template>
   <div id="grid">
-    <entry />
-    <letter-grid />
+    <message-box :trigger="submitTrigger" />
+    <entry :submitWord="submitWord" :shuffleLetters="shuffleLetters" />
+    <letter-grid :shuffleTrigger="shuffleTrigger" />
     <control-buttons />
   </div>
 </template>
@@ -10,12 +11,28 @@
 import Entry from './Entry/Entry.vue'
 import LetterGrid from './Letters/LetterGrid.vue'
 import ControlButtons from './ControlButtons.vue'
+import MessageBox from './MessageBox.vue'
 
 export default {
   components: {
     Entry,
     LetterGrid,
-    ControlButtons
+    ControlButtons,
+    MessageBox
+  },
+  data () {
+    return {
+      submitTrigger: 0,
+      shuffleTrigger: 0
+    }
+  },
+  methods: {
+    submitWord () {
+      this.submitTrigger++
+    },
+    shuffleLetters () {
+      this.shuffleTrigger++
+    }
   }
 }
 </script>

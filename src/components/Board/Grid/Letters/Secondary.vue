@@ -1,5 +1,5 @@
 <template>
-  <h2>{{ $store.state.letters.secondaries[i - 1] }}</h2>
+  <h2>{{ i }}</h2>
 </template>
 
 <script>

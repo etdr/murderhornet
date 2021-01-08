@@ -55,4 +55,26 @@ export function getAllWordsForLetters ({ primary, secondaries }) {
   
 }
 
+const scoring = {
+  4: 1,
+  5: 3,
+  6: 6,
+  7: 9,
+  8: 11,
+  9: 13,
+  other: 15
+}
+
+
+
+export function computePoints (guessed) {
+  // let points = 0
+  // for (const w of guessed.true) {
+  //   points += scoring[w.length]
+  // }
+  //return points
+  return [...guessed.true].reduce((points, word) =>
+    word.length > 9 ? points + scoring[word.length] : points + scoring.other, 0)
+}
+
 
